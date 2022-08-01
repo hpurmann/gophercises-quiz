@@ -3,16 +3,20 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
 )
 
 func main() {
-	filename := "problems.csv"
-	fileContent, err := os.ReadFile(filename)
+	filename := flag.String("questions", "problems.csv", "filepath of questions csv file")
+	flag.Parse()
+
+	fileContent, err := os.ReadFile(*filename)
+
 	if err != nil {
-		fmt.Println("Error: cannot read file ", filename, err)
+		fmt.Println("Error: cannot read file ", *filename, err)
 	}
 
 	reader := csv.NewReader(strings.NewReader(string(fileContent)))
