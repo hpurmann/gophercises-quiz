@@ -7,10 +7,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
+
+func printScore(score, totalQuestions int) {
+	fmt.Printf("\nYou scored %d out of %d.\n", score, totalQuestions)
+	os.Exit(0)
+}
 
 func main() {
 	filename := flag.String("questions", "problems.csv", "filepath of questions csv file")
+	limit := flag.Int("limit", 2, "Time limit in seconds to complete the quiz")
 	flag.Parse()
 
 	fileContent, err := os.ReadFile(*filename)
@@ -26,7 +33,17 @@ func main() {
 		fmt.Println("Error marshalling csv", err)
 	}
 
+	fmt.Printf("Welcome! Your time limit is %d seconds. The timer will start after hitting enter.\n", *limit)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	scanner.Text()
+
 	var numCorrect int
+
+	time.AfterFunc(time.Second*time.Duration(*limit), func() {
+		printScore(numCorrect, len(fields))
+	})
 
 	for index, questionAnswer := range fields {
 		question, actualAnswer := questionAnswer[0], questionAnswer[1]
@@ -41,5 +58,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("You scored %d out of %d.\n", numCorrect, len(fields))
+	printScore(numCorrect, len(fields))
 }
