@@ -33,6 +33,8 @@ func main() {
 		exit(fmt.Sprint("Error marshalling csv", err))
 	}
 
+	problems := parseLines(fields)
+
 	fmt.Printf("Welcome! Your time limit is %d seconds. The timer will start after hitting enter.\n", *limit)
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -45,20 +47,37 @@ func main() {
 		printScore(numCorrect, len(fields))
 	})
 
-	for index, questionAnswer := range fields {
-		question, actualAnswer := questionAnswer[0], questionAnswer[1]
-		fmt.Printf("Question %d: %s = ", index+1, question)
+	for index, p := range problems {
+		fmt.Printf("Question %d: %s = ", index+1, p.q)
 
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		answer := scanner.Text()
 
-		if strings.TrimSpace(answer) == actualAnswer {
+		if strings.TrimSpace(answer) == p.a {
 			numCorrect += 1
 		}
 	}
 
 	printScore(numCorrect, len(fields))
+}
+
+type problem struct {
+	q string
+	a string
+}
+
+func parseLines(lines [][]string) []problem {
+	ret := make([]problem, len(lines))
+
+	for i, line := range lines {
+		ret[i] = problem{
+			q: line[0],
+			a: line[1],
+		}
+	}
+
+	return ret
 }
 
 func exit(msg string) {
