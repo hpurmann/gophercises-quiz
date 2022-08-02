@@ -6,7 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -46,6 +48,14 @@ func main() {
 	time.AfterFunc(time.Second*time.Duration(*limit), func() {
 		printScore(numCorrect, len(fields))
 	})
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
+	go func() {
+		<-c
+		printScore(numCorrect, len(fields))
+	}()
 
 	for index, p := range problems {
 		fmt.Printf("Question %d: %s = ", index+1, p.q)
