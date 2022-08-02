@@ -23,14 +23,14 @@ func main() {
 	file, err := os.Open(*filename)
 
 	if err != nil {
-		fmt.Println("Error: cannot read file ", *filename, err)
+		exit(fmt.Sprint("Error: cannot read file ", *filename, err))
 	}
 
 	reader := csv.NewReader(file)
 	fields, err := reader.ReadAll()
 
 	if err != nil {
-		fmt.Println("Error marshalling csv", err)
+		exit(fmt.Sprint("Error marshalling csv", err))
 	}
 
 	fmt.Printf("Welcome! Your time limit is %d seconds. The timer will start after hitting enter.\n", *limit)
@@ -59,4 +59,9 @@ func main() {
 	}
 
 	printScore(numCorrect, len(fields))
+}
+
+func exit(msg string) {
+	fmt.Println(msg)
+	os.Exit(1)
 }
