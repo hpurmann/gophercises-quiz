@@ -17,7 +17,7 @@ func printScore(score, totalQuestions int) {
 
 func main() {
 	filename := flag.String("questions", "problems.csv", "filepath of questions csv file")
-	limit := flag.Int("limit", 2, "Time limit in seconds to complete the quiz")
+	limit := flag.Int("limit", 30, "Time limit in seconds to complete the quiz")
 	flag.Parse()
 
 	file, err := os.Open(*filename)
