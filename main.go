@@ -20,13 +20,13 @@ func main() {
 	limit := flag.Int("limit", 2, "Time limit in seconds to complete the quiz")
 	flag.Parse()
 
-	fileContent, err := os.ReadFile(*filename)
+	file, err := os.Open(*filename)
 
 	if err != nil {
 		fmt.Println("Error: cannot read file ", *filename, err)
 	}
 
-	reader := csv.NewReader(strings.NewReader(string(fileContent)))
+	reader := csv.NewReader(file)
 	fields, err := reader.ReadAll()
 
 	if err != nil {
